@@ -9,7 +9,8 @@
 function getRandomNumber(countMin, countMax, n = 0) {
   const minNumber = Math.min(countMin, countMax);
   const maxNumber = Math.max(countMin, countMax);
-  const randomNumber = (Math.random() * (maxNumber - minNumber) + minNumber).toFixed(n);
+  const randomNumber = parseFloat((Math.random() * (maxNumber - minNumber) + minNumber).toFixed(n));
+  // const randomNumber = +(Math.random() * (maxNumber - minNumber) + minNumber).toFixed(n);
   // const randomNumber = parseInt((Math.random() * (maxNumber - minNumber) + minNumber) * Math.pow(10, n)) / Math.pow(10, n);
 
   if (minNumber < 0 || maxNumber < 0) {

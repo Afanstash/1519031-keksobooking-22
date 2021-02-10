@@ -5,21 +5,21 @@
 // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/pow
 // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/min
 
-function getRandomNumber(countMin, countMax, n) {
-  let minInt = Math.min(countMin, countMax);
-  let maxInt = Math.max(countMin, countMax);
+function getRandomNumber(countMin, countMax, n = 0) {
+  let minNumber = Math.min(countMin, countMax);
+  let maxNumber = Math.max(countMin, countMax);
   let mathRandomNumber = Math.random();
-  let randomNumber = parseInt((mathRandomNumber * (maxInt - minInt + 1) + minInt) * Math.pow(10, n)) / Math.pow(10, n);
+  let randomNumber = parseInt((mathRandomNumber * (maxNumber - minNumber + 1) + minNumber) * Math.pow(10, n)) / Math.pow(10, n);
 
-  if (minInt < 0 || maxInt < 0) {
+  if (minNumber < 0 || maxNumber < 0) {
     return 'Введите положительные числа!';
   }
-  if (minInt === maxInt) {
-    return minInt;
+  if (minNumber === maxNumber) {
+    return minNumber;
   }
-  while (randomNumber < minInt || randomNumber > maxInt) {
+  while (randomNumber < minNumber || randomNumber > maxNumber) {
     mathRandomNumber = Math.random();
-    randomNumber = parseInt((mathRandomNumber * (maxInt - minInt + 1) + minInt) * Math.pow(10, n)) / Math.pow(10, n);
+    randomNumber = parseInt((mathRandomNumber * (maxNumber - minNumber + 1) + minNumber) * Math.pow(10, n)) / Math.pow(10, n);
   }
   return randomNumber;
 }

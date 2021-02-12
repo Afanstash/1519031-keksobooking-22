@@ -106,7 +106,8 @@ const createData = () => {
     author: createAuthor(),
     offer: {
       title: 'Внимание! Супер предложение ^_~',
-      address: x + ', ' + y,
+      address: `${x}, ${y}`,
+      // address: x + ', ' + y,
       price: getRandomNumber(0, 100000, 2),
       type: getRandomArrayElement(TYPES),
       rooms: getRandomNumber(0, 10),

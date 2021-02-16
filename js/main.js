@@ -75,6 +75,45 @@ function getArray(offerArray, n = 5) {
   return new Array(getRandomNumber(1, n)).fill(null).map(() => getRandomArrayElement(offerArray));
 }
 
+
+//Пример6 Сортировка по возрастанию, если (a<b), то по убыванию
+[1,9,8,5,2,7].sort( (a,b) => {
+  if (a>b) {
+    return 1;
+  } else {
+    return -1;
+  }
+} );
+
+//Пример5
+[1,9,8,5,2,7].sort( () => Math.random()-0.5);//случайная сортировки
+
+//Пример4 =>стрелочка показывает, что она сразу возвращает значение
+const getArray2 = (offerArray, n = 5) => new Array(getRandomNumber(1, n)).fill(null).map(() => getRandomArrayElement(offerArray));
+
+//Пример1
+const newArrayFeatures2 = () => {
+  //many strings
+}
+
+//Пример2
+const fuff = array => {
+  //many strings
+}
+
+//Пример3 принимает 1 аргумент и решение в 1 строку
+const fuff2 = x => Math.random()*x;
+
+const assa = {};//объект
+
+//Пример7
+const shuffle = () => Math.random()-0.5;//функция случайной сортировки
+
+function newArrayFeatures3 (offerFeatures) {
+  return offerFeatures.sort(shuffle).slice(0, getRandomNumber(1, offerFeatures.length - 1));
+}
+newArrayFeatures3(offerFeatures);
+
 function newArrayFeatures () {
   let arrayFeatures = [];
   arrayFeatures[0] = getRandomArrayElement(offerFeatures);
@@ -82,12 +121,14 @@ function newArrayFeatures () {
   let j = getRandomNumber(1, offerFeatures.length);
   // console.log('Количество элементов в массиве должно быть: ' + j);
   while (i < j) {
-    let newArrayElement = getRandomArrayElement(offerFeatures);
-    let isExistsInArray = arrayFeatures.every((value) => {
-      return value !== newArrayElement;
-    });
+    const newArrayElement = getRandomArrayElement(offerFeatures);
+    // let newArrayElement = getRandomArrayElement(offerFeatures);
+    const isExistsInArray = arrayFeatures.includes(newArrayElement);//если нашел, то true
+    // let isExistsInArray = arrayFeatures.every((value) => {
+    //   return value === newArrayElement;
+    // });
     // console.log(isExistsInArray);
-    if (isExistsInArray) {
+    if (!isExistsInArray) {
       arrayFeatures[i] = newArrayElement;
       i++;
       // console.log(arrayFeatures);

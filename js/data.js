@@ -103,3 +103,5 @@ const SIMILAR_DATA_COUNT = 10;
 const similarData = new Array(SIMILAR_DATA_COUNT).fill(null).map(() => createData());
 // console.log(similarData);
 similarData;
+
+export {similarData};

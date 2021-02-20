@@ -1,3 +1,4 @@
 //Точка входа. Модуль, который связывает другие модули
 
-import './data.js';
+import {similarData} from './data.js';
+similarData;

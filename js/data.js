@@ -33,7 +33,7 @@ const offerPhotos = [
 ];
 
 function createAuthor() {
-  const randomType = '0' + getRandomNumber(0, 8);
+  const randomType = '0' + getRandomNumber(1, 8);
   return {avatar: 'img/avatars/user' + randomType + '.png'};
 }
 createAuthor();

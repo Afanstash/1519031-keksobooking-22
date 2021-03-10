@@ -23,14 +23,18 @@ cardElement.querySelector('.popup__text--capacity').textContent = `${cardData.of
 cardElement.querySelector('.popup__text--time').textContent = `Заезд после ${cardData.offer.checkin}, выезд до ${cardData.offer.checkout}`;
 cardElement.querySelector('.popup__features').textContent = cardData.offer.features.join(', ');
 cardElement.querySelector('.popup__description').textContent = cardData.offer.description;
-const fd = cardData.offer.photos;
-const rr = cardElement.querySelector('.popup__photos');
-for (let i = 0; i < fd.length; i++) {
-  let clonedElement = rr.cloneNode(true);
-  clonedElement.children[0].src = fd[i];
-  rr.appendChild(clonedElement);
+const cardPhotos = cardData.offer.photos;
+const popupPhotos = cardElement.querySelector('.popup__photos');
+const popupPhotosElement = popupPhotos.querySelector('.popup__photo');
+// console.log(popupPhotosElement);
+// console.log(cardPhotos);
+// console.log('длина массива: ' + cardPhotos.length);
+popupPhotosElement.src = cardPhotos[0];
+for (let i = 1; i < cardPhotos.length; i++) {
+  const clonedElement = popupPhotosElement.cloneNode(true);
+  clonedElement.src = cardPhotos[i];
+  popupPhotos.appendChild(clonedElement);
 }
-
 
 cardElement.querySelector('.popup__avatar').src = cardData.author.avatar;
 

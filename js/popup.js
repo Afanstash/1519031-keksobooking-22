@@ -23,11 +23,13 @@ cardElement.querySelector('.popup__text--capacity').textContent = `${cardData.of
 cardElement.querySelector('.popup__text--time').textContent = `Заезд после ${cardData.offer.checkin}, выезд до ${cardData.offer.checkout}`;
 
 // Доступные удобства
-// вариант 1
+
 const cardFeatures = cardData.offer.features;
 // console.log(cardFeatures);
 // console.log('длина массива: ' + cardFeatures.length);
 const popupFeatures = cardElement.querySelector('.popup__features');
+
+// вариант 1
 popupFeatures.innerHTML = '';
 for (let i = 0; i < cardFeatures.length; i++) {
   const newFeaturesElement = document.createElement('li');
@@ -40,10 +42,8 @@ for (let i = 0; i < cardFeatures.length; i++) {
 // вариант 2
 // popupFeatures.innerHTML = '';
 // cardFeatures.forEach(nameFeature => {
-//   console.log(nameFeature);
-
-//   // popupFeatures.innerHTML = `<li class="popup__feature popup__feature--${nameFeature}"></li>`;
-//   console.log(popupFeatures);
+//   // console.log(nameFeature);
+//   popupFeatures.innerHTML += `<li class="popup__feature popup__feature--${nameFeature}"></li>`;
 // });
 
 // Описание объекта недвижимости
@@ -79,7 +79,7 @@ for (let i = 0; i < cardPhotos.length; i++) {
 // popupPhotos.innerHTML = '';// очищаем div, используем в .forEach в данном случае//вызываем на родителе элементов, которые хотим удалить
 
 // cardData.offer.photos.forEach(imgUrl => {
-//   popupPhotos.innerHTML = `<img src="${imgUrl}" class="popup__photo" width="45" height="40" alt="Фотография жилья">`;
+//   popupPhotos.innerHTML += `<img src="${imgUrl}" class="popup__photo" width="45" height="40" alt="Фотография жилья">`;
 // });
 
 

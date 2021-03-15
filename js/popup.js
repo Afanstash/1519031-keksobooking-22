@@ -123,11 +123,16 @@ const mainPinMarker = L.marker(
 );
 mainPinMarker.addTo(map);
 
+const inputAddress = document.querySelector('#address');
+inputAddress.value = `${mainPinMarker.getLatLng().lat.toFixed(5)}, ${mainPinMarker.getLatLng().lng.toFixed(5)}`;
+inputAddress.setAttribute('readonly', '');
+
 mainPinMarker
   .on('moveend', (evt) => {
     const {lat, lng} = evt.target.getLatLng();
-    return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-  });
+    inputAddress.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  })
+;
 
 const points = similarData;
 // console.log(points);

@@ -50,25 +50,27 @@ createLocation();
 
 function newArrayFeatures () {
   let arrayFeatures = [];
-  arrayFeatures[0] = getRandomArrayElement(offerFeatures);
-  let i = 1;
-  let j = getRandomNumber(1, offerFeatures.length);
+  let j = getRandomNumber(0, offerFeatures.length);
   // console.log('Количество элементов в массиве должно быть: ' + j);
-  while (i < j) {
-    const newArrayElement = getRandomArrayElement(offerFeatures);
-    // let newArrayElement = getRandomArrayElement(offerFeatures);//цикл каждый раз новый
-    // const isExistsInArray = arrayFeatures.includes(newArrayElement);//если нашел, то true
-    const isDoesNotExistsInArray = arrayFeatures.every((value) => {//если не нашел, то true
-      return value !== newArrayElement;
-    });
-    // console.log(isDoesNotExistsInArray);
-    if (isDoesNotExistsInArray) {
-      arrayFeatures[i] = newArrayElement;
-      i++;
-      // console.log(arrayFeatures);
+  if (j !== 0) {
+    arrayFeatures[0] = getRandomArrayElement(offerFeatures);
+    let i = 1;
+    while (i < j) {
+      const newArrayElement = getRandomArrayElement(offerFeatures);
+      // let newArrayElement = getRandomArrayElement(offerFeatures);//цикл каждый раз новый
+      // const isExistsInArray = arrayFeatures.includes(newArrayElement);//если нашел, то true
+      const isDoesNotExistsInArray = arrayFeatures.every((value) => {//если не нашел, то true
+        return value !== newArrayElement;
+      });
+      // console.log(isDoesNotExistsInArray);
+      if (isDoesNotExistsInArray) {
+        arrayFeatures[i] = newArrayElement;
+        i++;
+        // console.log(arrayFeatures);
+      }
     }
+    // console.log('Итог: ' + arrayFeatures.join(', '));
   }
-  // console.log('Итог: ' + arrayFeatures.join(', '));
   return arrayFeatures;
 }
 newArrayFeatures();

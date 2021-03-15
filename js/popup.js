@@ -124,7 +124,7 @@ const mainPinMarker = L.marker(
 mainPinMarker.addTo(map);
 
 mainPinMarker
-  .on('moveend', function pin (evt) {
+  .on('moveend', (evt) => {
     const {lat, lng} = evt.target.getLatLng();
     return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   });

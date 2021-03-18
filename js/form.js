@@ -42,3 +42,78 @@ timeIn.addEventListener('change', function () {
 timeOut.addEventListener('change', function () {
   timeIn.value = timeOut.value;
 });
+
+const titleInput = form.querySelector('#title');
+
+// titleInput.addEventListener('invalid', () => {
+//   if (titleInput.validity.tooShort) {
+//     titleInput.setCustomValidity('Имя должно состоять минимум из 30-ти символов');
+//   } else if (titleInput.validity.tooLong) {
+//     titleInput.setCustomValidity('Имя не должно превышать 100 символов');
+//   } else if (titleInput.validity.valueMissing) {
+//     titleInput.setCustomValidity('Обязательное поле');
+//   } else {
+//     titleInput.setCustomValidity('');
+//   }
+// });
+
+const MIN_NAME_LENGTH = 30;
+const MAX_NAME_LENGTH = 100;
+
+titleInput.addEventListener('input', () => {
+  const valueLength = titleInput.value.length;
+
+  if (valueLength < MIN_NAME_LENGTH) {
+    titleInput.setCustomValidity('Ещё ' + (MIN_NAME_LENGTH - valueLength) +' симв.');
+  } else if (valueLength > MAX_NAME_LENGTH) {
+    titleInput.setCustomValidity('Удалите лишние ' + (valueLength - MAX_NAME_LENGTH) +' симв.');
+  } else {
+    titleInput.setCustomValidity('');
+  }
+  titleInput.reportValidity();
+});
+
+priceInput.addEventListener('invalid', () => {
+  if (priceInput.validity.badInput) {
+    priceInput.setCustomValidity('Введите число');
+  }
+  // if (priceInput.validity.rangeUnderflow) {
+  //   console.log(priceInput.validity);
+  //   priceInput.setCustomValidity('Цена за ночь должна быть не менее ' + priceInput.min + 'руб.');
+  // } //почему этот код не нужен?
+  if (priceInput.validity.rangeOverflow) {
+    priceInput.setCustomValidity('Цена за ночь не должна превышать 1 000 000 руб.');
+  }
+  if (priceInput.validity.valueMissing) {
+    priceInput.setCustomValidity('Обязательное поле');
+  }
+  priceInput.setCustomValidity('');
+  // console.log(priceInput.validity);
+});
+
+
+const roomNumberSelect = form.querySelector('#room_number');
+
+const capacitySelect = form.querySelector('#capacity');
+const capacitySelectChildren = capacitySelect.children;
+
+const checkRoomNumber = () => {
+  const roomNumber = Number(roomNumberSelect.value);// числовой формат из цифр, которые в были строкой
+  for (let capacitySelectChild of capacitySelectChildren) {
+    capacitySelectChild.setAttribute('disabled', '');
+    capacitySelectChild.removeAttribute('selected');
+  }
+  if (roomNumber === 100) {
+    capacitySelect.querySelector('[value="0"]').removeAttribute('disabled');
+  } else {
+    for (let capacitySelectChild of capacitySelectChildren) {
+      if (Number(capacitySelectChild.value) > 0 && Number(capacitySelectChild.value) <= roomNumber) {
+        capacitySelectChild.removeAttribute('disabled');
+      }
+    }
+  }
+  capacitySelect.value = capacitySelect.querySelector('option:not(:disabled)').value;
+}
+checkRoomNumber();
+
+roomNumberSelect.addEventListener('change', checkRoomNumber);

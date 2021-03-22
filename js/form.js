@@ -1,4 +1,6 @@
 // модуль, который отвечает за работу с формой
+import {isEnterEvent, isEscEvent} from './util.js';
+
 const minPrice = {
   'flat': 1000,
   'bungalow': 0,
@@ -117,3 +119,49 @@ const checkRoomNumber = () => {
 checkRoomNumber();
 
 roomNumberSelect.addEventListener('change', checkRoomNumber);
+
+
+const setResetDataOnForm = () => {
+  titleInput.value = '';
+  priceInput.value = '';
+  type.value = type.querySelector('[value="flat"]').value;
+  priceInput.placeholder = minPrice[type.value];
+  timeIn.value = timeIn.querySelector('[value="12:00"]').value;
+  timeOut.value = timeOut.querySelector('[value="12:00"]').value;
+  const descriptionTextarea = form.querySelector('#description');
+  descriptionTextarea.value = '';
+  roomNumberSelect.value = roomNumberSelect.querySelector('[value="1"]').value;
+  checkRoomNumber();
+  const featuresCheckbox = form.querySelectorAll('.feature__checkbox');
+  for (let i = 0; i < featuresCheckbox.length; i++) {
+    featuresCheckbox[i].checked = false;
+  }
+
+  // console.log('success!!!!!');
+
+  const successPopupTemplate = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+  const mainTagOnDocument = document.querySelector('main');
+  mainTagOnDocument.append(successPopupTemplate);
+
+  document.addEventListener('click', (evt) => {
+    if (evt.target) {
+      successPopupTemplate.remove(successPopupTemplate);
+    }
+  });
+
+  document.addEventListener('keydown', (evt) => {
+    if (isEscEvent(evt)) {
+      successPopupTemplate.remove(successPopupTemplate);
+    }
+  });
+};
+
+const formResetButton = form.querySelector('.ad-form__reset');
+formResetButton.addEventListener('click', setResetDataOnForm);
+formResetButton.addEventListener('keydown', (evt) => {
+  if (isEnterEvent(evt)) {
+    setResetDataOnForm();// строка 142-156, нужно вынести отдельно. как лучше это сделать?
+  }
+});
+
+export {setResetDataOnForm};

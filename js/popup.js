@@ -37,9 +37,16 @@ const createCustomPopup = (cardData) => {
 
   // Описание объекта недвижимости
   cardElement.querySelector('.popup__description').textContent = cardData.offer.description;
+
+  // Фотографии
   const cardPhotos = cardData.offer.photos;
   const popupPhotos = cardElement.querySelector('.popup__photos');
-  // Фотографии
+
+  if (cardPhotos.length === 0) {
+    popupPhotos.remove();
+    // console.log('Удален элемент содержащий класс фото (.popup__photos)!');
+  }
+
   const popupPhotosElement = popupPhotos.querySelector('.popup__photo');
   const mainClonedElement = popupPhotosElement.cloneNode(true);
   popupPhotosElement.remove();//вызываем на элементе, который хотим удалить
@@ -49,9 +56,29 @@ const createCustomPopup = (cardData) => {
     popupPhotos.appendChild(clonedElement);
   }
 
+
+
+  // Аватар
   cardElement.querySelector('.popup__avatar').src = cardData.author.avatar;
   // mapListElement.append(cardElement);
   return cardElement;
 };
 
 export {createCustomPopup};
+
+// данные с сервера
+// author: Object { avatar: "img/avatars/default.png" }
+// ​location: Object { lat: 35.411018333025694, lng: 139.96204376220706 }
+// ​​
+// offer: {…}
+// ​address: "102-0094 Tōkyō-to, Chiyoda-ku, Kioichō, 3"
+// ​​​checkin: "11:00"
+// ​​​checkout: "10:00"
+// ​​​description: "Один из лучших хостелов для душевного общения. Ужинаем вместе и играем в «Мафию» по вечерам, вкусно готовим. Ежедневная уборка, бесплатный Wi-Fi, чистое постельное белье."
+// ​​​features: Array(6) [ "wifi", "dishwasher", "parking", … ]
+// ​​​guests: 6
+// ​​​photos: Array [ "https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/earvin-huang-a8danBUbgw0.jpg" ]
+// ​​​price: 5000
+// ​​​rooms: 3
+// ​​​title: "Хостел «Для друзей»"
+// ​​​type: "bungalow"

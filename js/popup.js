@@ -65,20 +65,3 @@ const createCustomPopup = (cardData) => {
 };
 
 export {createCustomPopup};
-
-// данные с сервера
-// author: Object { avatar: "img/avatars/default.png" }
-// ​location: Object { lat: 35.411018333025694, lng: 139.96204376220706 }
-// ​​
-// offer: {…}
-// ​address: "102-0094 Tōkyō-to, Chiyoda-ku, Kioichō, 3"
-// ​​​checkin: "11:00"
-// ​​​checkout: "10:00"
-// ​​​description: "Один из лучших хостелов для душевного общения. Ужинаем вместе и играем в «Мафию» по вечерам, вкусно готовим. Ежедневная уборка, бесплатный Wi-Fi, чистое постельное белье."
-// ​​​features: Array(6) [ "wifi", "dishwasher", "parking", … ]
-// ​​​guests: 6
-// ​​​photos: Array [ "https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/earvin-huang-a8danBUbgw0.jpg" ]
-// ​​​price: 5000
-// ​​​rooms: 3
-// ​​​title: "Хостел «Для друзей»"
-// ​​​type: "bungalow"

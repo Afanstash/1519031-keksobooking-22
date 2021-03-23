@@ -55,4 +55,49 @@ const showAlert = (message) => {
   // setTimeout(() => alertContainer.remove());
 }
 
-export {getArray, isEnterEvent, isEscEvent, showAlert};
+let popupTemplate;
+// let errorButton;
+const mainTagOnDocument = document.querySelector('main');
+
+
+const onClick = (evt) => {
+  if (evt.target) {
+    closeMessage();
+  }
+};
+const onKeydown = (evt) => {
+  if (isEscEvent(evt)) {
+    closeMessage();
+  }
+};
+
+const closeMessage = () => {
+  popupTemplate.remove();
+  document.removeEventListener('click', onClick);
+  document.removeEventListener('keydown', onKeydown);
+};
+
+// errorButton.addEventListener('click', (evt) => {
+//   if (evt.target) {
+//     popupTemplate.remove();
+//   }
+// });
+
+
+
+const showErrorMessage = () => {
+  popupTemplate = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
+  // errorButton = popupTemplate.querySelector('.error__button');
+  mainTagOnDocument.append(popupTemplate);
+  document.addEventListener('click', onClick);
+  document.addEventListener('keydown', onKeydown);
+}
+
+const showSuccessMessage = () => {
+  popupTemplate = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+  mainTagOnDocument.append(popupTemplate);
+  document.addEventListener('click', onClick);
+  document.addEventListener('keydown', onKeydown);
+}
+
+export {getArray, isEnterEvent, isEscEvent, showAlert, showErrorMessage, showSuccessMessage};

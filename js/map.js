@@ -1,7 +1,7 @@
 // import {similarData} from './data.js';//тестовые данные больше не нужны
 import {createCustomPopup} from './popup.js';
-import {setResetDataOnForm} from './form.js';
-import {isEscEvent} from './util.js';
+import {showAlert} from './util.js';
+import {getData} from './api.js';
 
 const adForm = document.querySelector('.ad-form');
 adForm.classList.add('ad-form--disabled');
@@ -67,106 +67,60 @@ const mainPinMarker = L.marker(
 mainPinMarker.addTo(map);
 
 const inputAddress = document.querySelector('#address');
-inputAddress.value = `${mainPinMarker.getLatLng().lat.toFixed(5)}, ${mainPinMarker.getLatLng().lng.toFixed(5)}`;
 inputAddress.setAttribute('readonly', '');
+
+const setAddress = (latlng) => {
+  const {lat, lng} = latlng.getLatLng();
+  inputAddress.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+};
+
+setAddress(mainPinMarker);
 
 mainPinMarker
   .on('moveend', (evt) => {
-    const {lat, lng} = evt.target.getLatLng();
-    inputAddress.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    setAddress(evt.target);
   });
+
+const resetMainPinMarker = () => {
+  mainPinMarker.setLatLng({lat: 35.6895, lng: 139.69171});
+  setAddress(mainPinMarker);
+};
 
 // const points = similarData; //тестовые данные больше не нужны
+const onSuccess = (similarAds) => {
+  // console.log(similarAds);
+  similarAds.forEach((point) => {
+    const icon = L.icon({
+      iconUrl: 'img/pin.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
 
-fetch('https://22.javascript.pages.academy/keksobooking/data')
-  .then((response) => response.json())
-  // {
-  //   if (response.ok) {
-  //     response.json()
-  //   } else {
-  //     showAlert('Не удалось получить данные с сервера!');
-  //   }
-  // })
-  // .catch(() => {
-  //   showAlert('Не удалось получить данные с сервера!');
-  // })
-  .then((similarAds) => {
-    // console.log(similarAds);
-    similarAds.forEach((point) => {
-      const icon = L.icon({
-        iconUrl: 'img/pin.svg',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-      });
+    const marker = L.marker(
+      {
+        lat: point.location.lat,
+        lng: point.location.lng,
+      },
+      {
+        icon,
+      },
+    );
 
-      const marker = L.marker(
+    marker
+      .addTo(map)
+      .bindPopup(createCustomPopup(point),
         {
-          lat: point.location.lat,
-          lng: point.location.lng,
-        },
-        {
-          icon,
+          keepInView: true,
         },
       );
-
-      marker
-        .addTo(map)
-        .bindPopup(createCustomPopup(point),
-          {
-            keepInView: true,
-          },
-        );
-    });
-  });
-
-const setUserFormSubmit = (onSuccess) => {
-  adForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-
-    const formData = new FormData(evt.target);
-
-    fetch(
-      'https://22.javascript.pages.academy/keksobooking',
-      {
-        method: 'POST',
-        body: formData,
-      },
-    )
-    // .then(() => onSuccess());
-      .then((response) => {
-        if (response.ok) {
-          onSuccess();
-          mainPinMarker.setLatLng({lat: 35.6895, lng: 139.69171});
-          inputAddress.value = `${mainPinMarker.getLatLng().lat.toFixed(5)}, ${mainPinMarker.getLatLng().lng.toFixed(5)}`;
-        } else {
-          const successPopupTemplate = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
-          const errorButton = successPopupTemplate.querySelector('.error__button');
-          const mainTagOnDocument = document.querySelector('main');
-          mainTagOnDocument.append(successPopupTemplate);
-
-          errorButton.addEventListener('click', (evt) => {
-            if (evt.target) {
-              successPopupTemplate.remove(successPopupTemplate);
-            }
-          });
-
-          document.addEventListener('click', (evt) => {
-            if (evt.target) {
-              successPopupTemplate.remove(successPopupTemplate);
-            }
-          });
-
-          document.addEventListener('keydown', (evt) => {
-            if (isEscEvent(evt)) {
-              successPopupTemplate.remove(successPopupTemplate);
-            }
-          });
-        }
-      });
-    // .catch(() => {
-    //   showAlert('Не удалось отправить форму. Попробуйте ещё раз');
-    // });
   });
 };
 
-setUserFormSubmit(setResetDataOnForm);
+const onFail = (errorMessage) => {
+  showAlert(errorMessage);
+  // console.warn(errorMessage);
+};
+
+getData('https://22.javascript.pages.academy/keksobooking/data', {}, onSuccess, onFail);
+
+export {resetMainPinMarker};

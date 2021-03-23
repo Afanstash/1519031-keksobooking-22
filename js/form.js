@@ -1,5 +1,7 @@
 // модуль, который отвечает за работу с формой
-import {isEnterEvent, isEscEvent} from './util.js';
+import {showErrorMessage, showSuccessMessage} from './util.js';
+import {resetMainPinMarker} from './map.js';
+import {getData} from './api.js';
 
 const minPrice = {
   'flat': 1000,
@@ -75,22 +77,28 @@ titleInput.addEventListener('input', () => {
   titleInput.reportValidity();
 });
 
+priceInput.addEventListener('input', () => {
+  priceInput.setCustomValidity('');
+});
+
 priceInput.addEventListener('invalid', () => {
   if (priceInput.validity.badInput) {
     priceInput.setCustomValidity('Введите число');
+    return;
   }
-  // if (priceInput.validity.rangeUnderflow) {
-  //   console.log(priceInput.validity);
-  //   priceInput.setCustomValidity('Цена за ночь должна быть не менее ' + priceInput.min + 'руб.');
-  // } //почему этот код не нужен?
+  if (priceInput.validity.rangeUnderflow) {
+    priceInput.setCustomValidity('Цена за ночь должна быть не менее ' + priceInput.min + 'руб.');
+    return;
+  }
   if (priceInput.validity.rangeOverflow) {
     priceInput.setCustomValidity('Цена за ночь не должна превышать 1 000 000 руб.');
+    return;
   }
   if (priceInput.validity.valueMissing) {
     priceInput.setCustomValidity('Обязательное поле');
+    return;
   }
   priceInput.setCustomValidity('');
-  // console.log(priceInput.validity);
 });
 
 
@@ -120,8 +128,7 @@ checkRoomNumber();
 
 roomNumberSelect.addEventListener('change', checkRoomNumber);
 
-
-const setResetDataOnForm = () => {
+const resetForm = () => {
   titleInput.value = '';
   priceInput.value = '';
   type.value = type.querySelector('[value="flat"]').value;
@@ -136,32 +143,47 @@ const setResetDataOnForm = () => {
   for (let i = 0; i < featuresCheckbox.length; i++) {
     featuresCheckbox[i].checked = false;
   }
-
-  // console.log('success!!!!!');
-
-  const successPopupTemplate = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
-  const mainTagOnDocument = document.querySelector('main');
-  mainTagOnDocument.append(successPopupTemplate);
-
-  document.addEventListener('click', (evt) => {
-    if (evt.target) {
-      successPopupTemplate.remove(successPopupTemplate);
-    }
-  });
-
-  document.addEventListener('keydown', (evt) => {
-    if (isEscEvent(evt)) {
-      successPopupTemplate.remove(successPopupTemplate);
-    }
-  });
 };
 
 const formResetButton = form.querySelector('.ad-form__reset');
-formResetButton.addEventListener('click', setResetDataOnForm);
-formResetButton.addEventListener('keydown', (evt) => {
-  if (isEnterEvent(evt)) {
-    setResetDataOnForm();// строка 142-156, нужно вынести отдельно. как лучше это сделать?
-  }
+formResetButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  resetForm();
+  resetMainPinMarker();
 });
 
-export {setResetDataOnForm};
+form.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  const formData = new FormData(evt.target);
+
+  getData('https://22.javascript.pages.academy/keksobooking',
+    {
+      method: 'POST',
+      body: formData,
+    }, () => {
+      showSuccessMessage();
+      resetForm();
+      resetMainPinMarker();
+    }, showErrorMessage);
+  // fetch(
+  //   'https://22.javascript.pages.academy/keksobooking',
+  //   {
+  //     method: 'POST',
+  //     body: formData,
+  //   },
+  // )
+  // // .then(() => onSuccess());
+  //   .then((response) => {
+  //     if (response.ok) {
+  //       showSuccessMessage();
+  //       resetForm();
+  //       resetMainPinMarker();
+  //     } else {
+  //       showErrorMessage();
+  //     }
+  //   })
+  //   .catch(() => {
+  //     showErrorMessage();
+  //   });
+});

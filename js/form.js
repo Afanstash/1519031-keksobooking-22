@@ -1,4 +1,8 @@
 // модуль, который отвечает за работу с формой
+import {showErrorMessage, showSuccessMessage} from './util.js';
+import {resetMainPinMarker} from './map.js';
+import {getData} from './api.js';
+
 const minPrice = {
   'flat': 1000,
   'bungalow': 0,
@@ -73,22 +77,28 @@ titleInput.addEventListener('input', () => {
   titleInput.reportValidity();
 });
 
+priceInput.addEventListener('input', () => {
+  priceInput.setCustomValidity('');
+});
+
 priceInput.addEventListener('invalid', () => {
   if (priceInput.validity.badInput) {
     priceInput.setCustomValidity('Введите число');
+    return;
   }
-  // if (priceInput.validity.rangeUnderflow) {
-  //   console.log(priceInput.validity);
-  //   priceInput.setCustomValidity('Цена за ночь должна быть не менее ' + priceInput.min + 'руб.');
-  // } //почему этот код не нужен?
+  if (priceInput.validity.rangeUnderflow) {
+    priceInput.setCustomValidity('Цена за ночь должна быть не менее ' + priceInput.min + 'руб.');
+    return;
+  }
   if (priceInput.validity.rangeOverflow) {
     priceInput.setCustomValidity('Цена за ночь не должна превышать 1 000 000 руб.');
+    return;
   }
   if (priceInput.validity.valueMissing) {
     priceInput.setCustomValidity('Обязательное поле');
+    return;
   }
   priceInput.setCustomValidity('');
-  // console.log(priceInput.validity);
 });
 
 
@@ -117,3 +127,63 @@ const checkRoomNumber = () => {
 checkRoomNumber();
 
 roomNumberSelect.addEventListener('change', checkRoomNumber);
+
+const resetForm = () => {
+  titleInput.value = '';
+  priceInput.value = '';
+  type.value = type.querySelector('[value="flat"]').value;
+  priceInput.placeholder = minPrice[type.value];
+  timeIn.value = timeIn.querySelector('[value="12:00"]').value;
+  timeOut.value = timeOut.querySelector('[value="12:00"]').value;
+  const descriptionTextarea = form.querySelector('#description');
+  descriptionTextarea.value = '';
+  roomNumberSelect.value = roomNumberSelect.querySelector('[value="1"]').value;
+  checkRoomNumber();
+  const featuresCheckbox = form.querySelectorAll('.feature__checkbox');
+  for (let i = 0; i < featuresCheckbox.length; i++) {
+    featuresCheckbox[i].checked = false;
+  }
+};
+
+const formResetButton = form.querySelector('.ad-form__reset');
+formResetButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  resetForm();
+  resetMainPinMarker();
+});
+
+form.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  const formData = new FormData(evt.target);
+
+  getData('https://22.javascript.pages.academy/keksobooking',
+    {
+      method: 'POST',
+      body: formData,
+    }, () => {
+      showSuccessMessage();
+      resetForm();
+      resetMainPinMarker();
+    }, showErrorMessage);
+  // fetch(
+  //   'https://22.javascript.pages.academy/keksobooking',
+  //   {
+  //     method: 'POST',
+  //     body: formData,
+  //   },
+  // )
+  // // .then(() => onSuccess());
+  //   .then((response) => {
+  //     if (response.ok) {
+  //       showSuccessMessage();
+  //       resetForm();
+  //       resetMainPinMarker();
+  //     } else {
+  //       showErrorMessage();
+  //     }
+  //   })
+  //   .catch(() => {
+  //     showErrorMessage();
+  //   });
+});

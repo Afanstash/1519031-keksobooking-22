@@ -1,5 +1,7 @@
-import {similarData} from './data.js';
+// import {similarData} from './data.js';//тестовые данные больше не нужны
 import {createCustomPopup} from './popup.js';
+import {showAlert} from './util.js';
+import {getData} from './api.js';
 
 const adForm = document.querySelector('.ad-form');
 adForm.classList.add('ad-form--disabled');
@@ -37,7 +39,7 @@ const map = L.map('map-canvas')
   .setView({
     lat: 35.6895,
     lng: 139.69171,
-  }, 12);
+  }, 9);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -65,62 +67,60 @@ const mainPinMarker = L.marker(
 mainPinMarker.addTo(map);
 
 const inputAddress = document.querySelector('#address');
-inputAddress.value = `${mainPinMarker.getLatLng().lat.toFixed(5)}, ${mainPinMarker.getLatLng().lng.toFixed(5)}`;
 inputAddress.setAttribute('readonly', '');
+
+const setAddress = (latlng) => {
+  const {lat, lng} = latlng.getLatLng();
+  inputAddress.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+};
+
+setAddress(mainPinMarker);
 
 mainPinMarker
   .on('moveend', (evt) => {
-    const {lat, lng} = evt.target.getLatLng();
-    inputAddress.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-  })
-;
-
-const points = similarData;
-// console.log(points);
-
-// points.forEach(({location}) => {
-//   const icon = L.icon({
-//     iconUrl: 'img/pin.svg',
-//     iconSize: [40, 40],
-//     iconAnchor: [20, 40],
-//   });
-
-//   const marker = L.marker(
-//     {
-//       lat: location.x,
-//       lng: location.y,
-//     },
-//     {
-//       icon,
-//     },
-//   );
-
-//   marker
-//     .addTo(map);
-// });
-
-points.forEach((point) => {
-  const icon = L.icon({
-    iconUrl: 'img/pin.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
+    setAddress(evt.target);
   });
 
-  const marker = L.marker(
-    {
-      lat: point.location.x,
-      lng: point.location.y,
-    },
-    {
-      icon,
-    },
-  );
+const resetMainPinMarker = () => {
+  mainPinMarker.setLatLng({lat: 35.6895, lng: 139.69171});
+  setAddress(mainPinMarker);
+};
 
-  marker
-    .addTo(map)
-    .bindPopup(createCustomPopup(point),
+// const points = similarData; //тестовые данные больше не нужны
+const onSuccess = (similarAds) => {
+  // console.log(similarAds);
+  similarAds.forEach((point) => {
+    const icon = L.icon({
+      iconUrl: 'img/pin.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
+
+    const marker = L.marker(
       {
-        keepInView: true,
+        lat: point.location.lat,
+        lng: point.location.lng,
+      },
+      {
+        icon,
       },
     );
-});
+
+    marker
+      .addTo(map)
+      .bindPopup(createCustomPopup(point),
+        {
+          keepInView: true,
+        },
+      );
+  });
+};
+
+const onFail = (errorMessage) => {
+  showAlert(errorMessage);
+  // console.warn(errorMessage);
+};
+
+getData('https://22.javascript.pages.academy/keksobooking/data', {}, onSuccess, onFail);
+
+export {resetMainPinMarker};

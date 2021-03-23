@@ -37,9 +37,16 @@ const createCustomPopup = (cardData) => {
 
   // Описание объекта недвижимости
   cardElement.querySelector('.popup__description').textContent = cardData.offer.description;
+
+  // Фотографии
   const cardPhotos = cardData.offer.photos;
   const popupPhotos = cardElement.querySelector('.popup__photos');
-  // Фотографии
+
+  if (cardPhotos.length === 0) {
+    popupPhotos.remove();
+    // console.log('Удален элемент содержащий класс фото (.popup__photos)!');
+  }
+
   const popupPhotosElement = popupPhotos.querySelector('.popup__photo');
   const mainClonedElement = popupPhotosElement.cloneNode(true);
   popupPhotosElement.remove();//вызываем на элементе, который хотим удалить
@@ -49,6 +56,9 @@ const createCustomPopup = (cardData) => {
     popupPhotos.appendChild(clonedElement);
   }
 
+
+
+  // Аватар
   cardElement.querySelector('.popup__avatar').src = cardData.author.avatar;
   // mapListElement.append(cardElement);
   return cardElement;

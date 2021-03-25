@@ -165,7 +165,7 @@ form.addEventListener('submit', (evt) => {
       showSuccessMessage();
       resetForm();
       resetMainPinMarker();
-    }, showErrorMessage);
+    }, () => {}, showErrorMessage);
   // fetch(
   //   'https://22.javascript.pages.academy/keksobooking',
   //   {

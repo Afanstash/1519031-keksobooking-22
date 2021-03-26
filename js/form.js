@@ -2,6 +2,7 @@
 import {showErrorMessage, showSuccessMessage} from './util.js';
 import {resetMainPinMarker} from './map.js';
 import {getData} from './api.js';
+import {previewAvatar, newFoto} from './foto.js';
 
 const minPrice = {
   'flat': 1000,
@@ -143,6 +144,8 @@ const resetForm = () => {
   for (let i = 0; i < featuresCheckbox.length; i++) {
     featuresCheckbox[i].checked = false;
   }
+  previewAvatar.src = 'img/muffin-grey.svg';
+  newFoto.src = '';
 };
 
 const formResetButton = form.querySelector('.ad-form__reset');
@@ -165,7 +168,7 @@ form.addEventListener('submit', (evt) => {
       showSuccessMessage();
       resetForm();
       resetMainPinMarker();
-    }, () => {}, showErrorMessage);
+    }, showErrorMessage);
   // fetch(
   //   'https://22.javascript.pages.academy/keksobooking',
   //   {

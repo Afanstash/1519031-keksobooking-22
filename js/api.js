@@ -1,9 +1,10 @@
-const getData = (url, options, onSuccess, onFail) => {
+const getData = (url, options, onSuccess, onFilters, onFail) => {
   fetch(url, options)
     .then((response) => response.json())
     .then((response) => {
       // console.log(response);
       onSuccess(response);
+      onFilters();
     })
     .catch(() => {
       onFail('Произошла ошибка при загрузке данных с сервера');

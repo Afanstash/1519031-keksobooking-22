@@ -1,4 +1,4 @@
-// import {similarData} from './data.js';//тестовые данные больше не нужны
+/* global _:readonly */
 import {createCustomPopup} from './popup.js';
 import {showAlert} from './util.js';
 import {getData} from './api.js';
@@ -28,38 +28,6 @@ const openFilters = () => {
   }
 };
 
-
-
-// const setHousingTypeClick = () => {
-//   housingTypeSelect.addEventListener('change', () => {
-//     const currentHousingType = housingTypeSelect.value;
-//     // return currentHousingType;
-//     // console.log(currentHousingType);
-//   });
-// };
-
-// const getAdRank = (ad) => {
-
-//   let rank = 0;
-
-//   if (ad.offer.type === housingTypeSelect.value) {
-//     rank += 2;
-//     console.log(rank);
-//     console.log(ad.offer.type);
-//     console.log(housingTypeSelect.value);
-//   } else {
-//     rank += 1;
-//   }
-//   return rank;
-// };
-
-// const sortAds = (adA, adB) => {
-//   const rankA = getAdRank(adA);
-//   const rankB = getAdRank(adB);
-
-//   return rankB - rankA;
-// }
-
 /* global L:readonly */
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -69,11 +37,6 @@ const map = L.map('map-canvas')
     for (let adFormChild of adFormChildren) {
       adFormChild.removeAttribute('disabled');
     }
-
-    // mapFilters.classList.remove('map__filters--disabled');
-    // for (let mapFiltersChild of mapFiltersChildren) {
-    //   mapFiltersChild.removeAttribute('disabled');
-    // }
   })
   .setView({
     lat: 35.6895,
@@ -126,70 +89,91 @@ const resetMainPinMarker = () => {
 };
 
 
-const housingTypeSelect= mapFilters.querySelector('#housing-type');
-const housingPriceSelect= mapFilters.querySelector('#housing-price');
-const housingRoomsSelect= mapFilters.querySelector('#housing-rooms');
-const housingGuestsSelect= mapFilters.querySelector('#housing-guests');
-const filterWifiSelect= mapFilters.querySelector('#filter-wifi');
-const filterDishwasherSelect= mapFilters.querySelector('#filter-dishwasher');
-const filterParkingSelect= mapFilters.querySelector('#filter-parking');
-const filterWasherSelect= mapFilters.querySelector('#filter-washer');
-const filterElevatorSelect= mapFilters.querySelector('#filter-elevator');
-const filterConditionerSelect= mapFilters.querySelector('#filter-conditioner');
+const housingTypeSelect = mapFilters.querySelector('#housing-type');
+const housingPriceSelect = mapFilters.querySelector('#housing-price');
+const housingRoomsSelect = mapFilters.querySelector('#housing-rooms');
+const housingGuestsSelect = mapFilters.querySelector('#housing-guests');
+const filterWifiSelect = mapFilters.querySelector('#filter-wifi');
+const filterDishwasherSelect = mapFilters.querySelector('#filter-dishwasher');
+const filterParkingSelect = mapFilters.querySelector('#filter-parking');
+const filterWasherSelect = mapFilters.querySelector('#filter-washer');
+const filterElevatorSelect = mapFilters.querySelector('#filter-elevator');
+const filterConditionerSelect = mapFilters.querySelector('#filter-conditioner');
 const SIMILAR_ADS_COUNT = 10;//.slice(0, SIMILAR_ADS_COUNT)
-const filteredData =[];
+const filteredData = [];
 const filterState = {};//будем записывать текущее состояние всех select
 const markers = [];
+const RERENDER_DELAY = 500;
+const debounced = _.debounce( () => {filter()}, RERENDER_DELAY);
 
-housingTypeSelect.addEventListener('change', () => {
-  filterState.type = housingTypeSelect.value;
-  filter();
-});
+// housingTypeSelect.addEventListener('change', () => {
+//   filterState.type = housingTypeSelect.value;
+//   debounced();
+// });
 
-housingPriceSelect.addEventListener('change', () => {
-  filterState.price = housingPriceSelect.value;
-  filter();
-});
+// housingPriceSelect.addEventListener('change', () => {
+//   filterState.price = housingPriceSelect.value;
+//   debounced();
+// });
 
-housingRoomsSelect.addEventListener('change', () => {
-  filterState.rooms = housingRoomsSelect.value;
-  filter();
-});
+// housingRoomsSelect.addEventListener('change', () => {
+//   filterState.rooms = housingRoomsSelect.value;
+//   debounced();
+// });
 
-housingGuestsSelect.addEventListener('change', () => {
-  filterState.guests = housingGuestsSelect.value;
-  filter();
-});
+// housingGuestsSelect.addEventListener('change', () => {
+//   filterState.guests = housingGuestsSelect.value;
+//   debounced();
+// });
 
-filterWifiSelect.addEventListener('change', () => {
-  filterState.wifi = filterWifiSelect.checked;
-  filter();
-});
+// filterWifiSelect.addEventListener('change', () => {
+//   filterState.wifi = filterWifiSelect.checked;
+//   debounced();
+// });
 
-filterDishwasherSelect.addEventListener('change', () => {
-  filterState.dishwasher = filterDishwasherSelect.checked;
-  filter();
-});
+// filterDishwasherSelect.addEventListener('change', () => {
+//   filterState.dishwasher = filterDishwasherSelect.checked;
+//   debounced();
+// });
 
-filterParkingSelect.addEventListener('change', () => {
-  filterState.parking = filterParkingSelect.checked;
-  filter();
-});
+// filterParkingSelect.addEventListener('change', () => {
+//   filterState.parking = filterParkingSelect.checked;
+//   debounced();
+// });
 
-filterWasherSelect.addEventListener('change', () => {
-  filterState.washer = filterWasherSelect.checked;
-  filter();
-});
+// filterWasherSelect.addEventListener('change', () => {
+//   filterState.washer = filterWasherSelect.checked;
+//   debounced();
+// });
 
-filterElevatorSelect.addEventListener('change', () => {
-  filterState.elevator = filterElevatorSelect.checked;
-  filter();
-});
+// filterElevatorSelect.addEventListener('change', () => {
+//   filterState.elevator = filterElevatorSelect.checked;
+//   debounced();
+// });
 
-filterConditionerSelect.addEventListener('change', () => {
-  filterState.conditioner = filterConditionerSelect.checked;
-  filter();
-});
+// filterConditionerSelect.addEventListener('change', () => {
+//   filterState.conditioner = filterConditionerSelect.checked;
+//   debounced();
+// });
+
+const selectChangeHandler = (select, key, attribute) => {
+  select.addEventListener('change', (evt) => {
+    filterState[key] = evt.target[attribute];
+    debounced();
+  });
+};
+selectChangeHandler(housingTypeSelect, 'type', 'value');
+selectChangeHandler(housingPriceSelect, 'price', 'value');
+selectChangeHandler(housingRoomsSelect, 'rooms', 'value');
+selectChangeHandler(housingGuestsSelect, 'guests', 'value');
+
+selectChangeHandler(filterWifiSelect, 'wifi', 'checked');
+selectChangeHandler(filterDishwasherSelect, 'dishwasher', 'checked');
+selectChangeHandler(filterParkingSelect, 'parking', 'checked');
+selectChangeHandler(filterWasherSelect, 'washer', 'checked');
+selectChangeHandler(filterElevatorSelect, 'elevator', 'checked');
+selectChangeHandler(filterConditionerSelect, 'conditioner', 'checked');
+
 
 const filter = () => {
   markers.forEach(marker => marker.remove());
@@ -274,21 +258,8 @@ const onSuccess = (similarAds) => {
   // console.log(similarAds);
   //filteredData.push(similarAds);//в массив записали массив
   filteredData.push(...similarAds);//в массив записали содержимое массива
-  filter();
-  // console.log(similarAds);
-  // const newAds = similarAds.filter( ad => ad.offer.type === 'house' );
-  // const newAds = similarAds.filter( ad => {
-  //   housingTypeSelect.addEventListener('change', () => {
-  //     const currentHousingType = housingTypeSelect.value;
-  //     if (ad.offer.type === currentHousingType) {
-  //       console.log(currentHousingType);
-  //     }
-  //   });
-  //   return true;
-  // });
-  // console.log(newAds);
-
-
+  openFilters();
+  debounced();
 };
 
 const onFail = (errorMessage) => {
@@ -296,6 +267,6 @@ const onFail = (errorMessage) => {
   // console.warn(errorMessage);
 };
 
-getData('https://22.javascript.pages.academy/keksobooking/data', {}, onSuccess, openFilters, onFail);
+getData('https://22.javascript.pages.academy/keksobooking/data', {}, onSuccess, onFail);
 
 export {resetMainPinMarker};

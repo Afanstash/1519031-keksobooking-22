@@ -18,12 +18,10 @@ const createCustomPopup = (cardData) => {
 
   // Доступные удобства
   const cardFeatures = cardData.offer.features;
-  // console.log(cardFeatures.length);
   const popupFeatures = cardElement.querySelector('.popup__features');
 
   if (cardFeatures.length === 0) {
     popupFeatures.remove();
-    // console.log('Удален элемент содержащий класс удобства (.popup__features)!');
   }
 
   popupFeatures.innerHTML = '';
@@ -44,7 +42,6 @@ const createCustomPopup = (cardData) => {
 
   if (cardPhotos.length === 0) {
     popupPhotos.remove();
-    // console.log('Удален элемент содержащий класс фото (.popup__photos)!');
   }
 
   const popupPhotosElement = popupPhotos.querySelector('.popup__photo');
@@ -56,11 +53,8 @@ const createCustomPopup = (cardData) => {
     popupPhotos.appendChild(clonedElement);
   }
 
-
-
   // Аватар
   cardElement.querySelector('.popup__avatar').src = cardData.author.avatar;
-  // mapListElement.append(cardElement);
   return cardElement;
 };
 

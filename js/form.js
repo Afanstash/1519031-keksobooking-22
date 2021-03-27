@@ -17,21 +17,16 @@ const minPrice = {
 // «Дворец» — минимальная цена 10 000.
 const form = document.querySelector('.ad-form');
 const type = form.querySelector('#type');
-// const option = type.querySelector('option');
 
 const priceInput = form.querySelector('#price');
-
-// console.log(type.value);
 priceInput.placeholder = minPrice[type.value];
 priceInput.min = minPrice[type.value];
-// console.log(priceInput.value);
 
 type.addEventListener('change', function () {
   // console.log('Цель достигнута!');
   priceInput.placeholder = minPrice[type.value];
   priceInput.min = minPrice[type.value];
   priceInput.value = '';
-  // console.log(type.value + ' цена от:' + priceInput.placeholder);
 });
 
 //Поля «Время заезда» и «Время выезда» синхронизированы:
@@ -49,18 +44,6 @@ timeOut.addEventListener('change', function () {
 });
 
 const titleInput = form.querySelector('#title');
-
-// titleInput.addEventListener('invalid', () => {
-//   if (titleInput.validity.tooShort) {
-//     titleInput.setCustomValidity('Имя должно состоять минимум из 30-ти символов');
-//   } else if (titleInput.validity.tooLong) {
-//     titleInput.setCustomValidity('Имя не должно превышать 100 символов');
-//   } else if (titleInput.validity.valueMissing) {
-//     titleInput.setCustomValidity('Обязательное поле');
-//   } else {
-//     titleInput.setCustomValidity('');
-//   }
-// });
 
 const MIN_NAME_LENGTH = 30;
 const MAX_NAME_LENGTH = 100;
@@ -169,24 +152,4 @@ form.addEventListener('submit', (evt) => {
       resetForm();
       resetMainPinMarker();
     }, showErrorMessage);
-  // fetch(
-  //   'https://22.javascript.pages.academy/keksobooking',
-  //   {
-  //     method: 'POST',
-  //     body: formData,
-  //   },
-  // )
-  // // .then(() => onSuccess());
-  //   .then((response) => {
-  //     if (response.ok) {
-  //       showSuccessMessage();
-  //       resetForm();
-  //       resetMainPinMarker();
-  //     } else {
-  //       showErrorMessage();
-  //     }
-  //   })
-  //   .catch(() => {
-  //     showErrorMessage();
-  //   });
 });

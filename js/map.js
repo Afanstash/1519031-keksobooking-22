@@ -6,7 +6,6 @@ import {getData} from './api.js';
 const adForm = document.querySelector('.ad-form');
 adForm.classList.add('ad-form--disabled');
 const adFormChildren = adForm.children;
-// console.log(adFormChildren);
 
 for (let adFormChild of adFormChildren) {
   adFormChild.setAttribute('disabled', '');
@@ -15,7 +14,6 @@ for (let adFormChild of adFormChildren) {
 const mapFilters  = document.querySelector('.map__filters ');
 mapFilters.classList.add('map__filters--disabled');
 const mapFiltersChildren = mapFilters.children;
-// console.log(mapFiltersChildren);
 
 for (let mapFiltersChild of mapFiltersChildren) {
   mapFiltersChild.setAttribute('disabled', '');
@@ -31,7 +29,6 @@ const openFilters = () => {
 /* global L:readonly */
 const map = L.map('map-canvas')
   .on('load', () => {
-    // console.log('Карта инициализирована');
 
     adForm.classList.remove('ad-form--disabled');
     for (let adFormChild of adFormChildren) {
@@ -105,56 +102,6 @@ const filterState = {};//будем записывать текущее сост
 const markers = [];
 const RERENDER_DELAY = 500;
 const debounced = _.debounce( () => {filter()}, RERENDER_DELAY);
-
-// housingTypeSelect.addEventListener('change', () => {
-//   filterState.type = housingTypeSelect.value;
-//   debounced();
-// });
-
-// housingPriceSelect.addEventListener('change', () => {
-//   filterState.price = housingPriceSelect.value;
-//   debounced();
-// });
-
-// housingRoomsSelect.addEventListener('change', () => {
-//   filterState.rooms = housingRoomsSelect.value;
-//   debounced();
-// });
-
-// housingGuestsSelect.addEventListener('change', () => {
-//   filterState.guests = housingGuestsSelect.value;
-//   debounced();
-// });
-
-// filterWifiSelect.addEventListener('change', () => {
-//   filterState.wifi = filterWifiSelect.checked;
-//   debounced();
-// });
-
-// filterDishwasherSelect.addEventListener('change', () => {
-//   filterState.dishwasher = filterDishwasherSelect.checked;
-//   debounced();
-// });
-
-// filterParkingSelect.addEventListener('change', () => {
-//   filterState.parking = filterParkingSelect.checked;
-//   debounced();
-// });
-
-// filterWasherSelect.addEventListener('change', () => {
-//   filterState.washer = filterWasherSelect.checked;
-//   debounced();
-// });
-
-// filterElevatorSelect.addEventListener('change', () => {
-//   filterState.elevator = filterElevatorSelect.checked;
-//   debounced();
-// });
-
-// filterConditionerSelect.addEventListener('change', () => {
-//   filterState.conditioner = filterConditionerSelect.checked;
-//   debounced();
-// });
 
 const selectChangeHandler = (select, key, attribute) => {
   select.addEventListener('change', (evt) => {
@@ -255,8 +202,6 @@ const filter = () => {
 };
 
 const onSuccess = (similarAds) => {
-  // console.log(similarAds);
-  //filteredData.push(similarAds);//в массив записали массив
   filteredData.push(...similarAds);//в массив записали содержимое массива
   openFilters();
   debounced();
@@ -264,7 +209,6 @@ const onSuccess = (similarAds) => {
 
 const onFail = (errorMessage) => {
   showAlert(errorMessage);
-  // console.warn(errorMessage);
 };
 
 getData('https://22.javascript.pages.academy/keksobooking/data', {}, onSuccess, onFail);

@@ -1,4 +1,7 @@
 // модуль с утилитарными функциями
+let popupTemplate;
+const mainTagOnDocument = document.querySelector('main');
+
 const isEnterEvent = (evt) => {
   return evt.key === 'Enter';
 };
@@ -24,11 +27,6 @@ const showAlert = (message) => {
   document.body.append(alertContainer);
 }
 
-let popupTemplate;
-// let errorButton;
-const mainTagOnDocument = document.querySelector('main');
-
-
 const onClick = (evt) => {
   if (evt.target) {
     closeMessage();
@@ -48,7 +46,6 @@ const closeMessage = () => {
 
 const showErrorMessage = () => {
   popupTemplate = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
-  // errorButton = popupTemplate.querySelector('.error__button');
   mainTagOnDocument.append(popupTemplate);
   document.addEventListener('click', onClick);
   document.addEventListener('keydown', onKeydown);

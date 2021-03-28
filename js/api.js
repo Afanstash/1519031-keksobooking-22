@@ -1,4 +1,4 @@
-const getData = (url, options, onSuccess, onFail) => {
+const fetchData = (url, options, onSuccess, onFail) => {
   fetch(url, options)
     .then((response) => response.json())
     .then((response) => {
@@ -9,4 +9,4 @@ const getData = (url, options, onSuccess, onFail) => {
     });
 };
 
-export {getData};
+export {fetchData};

@@ -22,8 +22,6 @@ const showAlert = (message) => {
   alertContainer.textContent = message;
 
   document.body.append(alertContainer);
-
-  // setTimeout(() => alertContainer.remove());
 }
 
 let popupTemplate;

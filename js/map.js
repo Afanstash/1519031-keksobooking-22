@@ -1,22 +1,43 @@
 /* global _:readonly */
+/* global L:readonly */
 import {createCustomPopup} from './popup.js';
 import {showAlert} from './util.js';
-import {getData} from './api.js';
+import {fetchData} from './api.js';
 
 const adForm = document.querySelector('.ad-form');
-adForm.classList.add('ad-form--disabled');
 const adFormChildren = adForm.children;
-// console.log(adFormChildren);
+const mapFilters  = document.querySelector('.map__filters ');
+const mapFiltersChildren = mapFilters.children;
+const inputAddress = document.querySelector('#address');
 
+const housingTypeSelect = mapFilters.querySelector('#housing-type');
+const housingPriceSelect = mapFilters.querySelector('#housing-price');
+const housingRoomsSelect = mapFilters.querySelector('#housing-rooms');
+const housingGuestsSelect = mapFilters.querySelector('#housing-guests');
+const filterWifiSelect = mapFilters.querySelector('#filter-wifi');
+const filterDishwasherSelect = mapFilters.querySelector('#filter-dishwasher');
+const filterParkingSelect = mapFilters.querySelector('#filter-parking');
+const filterWasherSelect = mapFilters.querySelector('#filter-washer');
+const filterElevatorSelect = mapFilters.querySelector('#filter-elevator');
+const filterConditionerSelect = mapFilters.querySelector('#filter-conditioner');
+const SIMILAR_ADS_COUNT = 10;
+const filteredData = [];
+const filterState = {};//будем записывать текущее состояние всех select
+const markers = [];
+const RERENDER_DELAY = 500;
+const debounced = _.debounce( () => {getFilter()}, RERENDER_DELAY);
+
+const coordinatesOfTheCenterCity = {
+  lat: 35.6895,
+  lng: 139.69171,
+};
+
+adForm.classList.add('ad-form--disabled');
 for (let adFormChild of adFormChildren) {
   adFormChild.setAttribute('disabled', '');
 }
 
-const mapFilters  = document.querySelector('.map__filters ');
 mapFilters.classList.add('map__filters--disabled');
-const mapFiltersChildren = mapFilters.children;
-// console.log(mapFiltersChildren);
-
 for (let mapFiltersChild of mapFiltersChildren) {
   mapFiltersChild.setAttribute('disabled', '');
 }
@@ -28,20 +49,15 @@ const openFilters = () => {
   }
 };
 
-/* global L:readonly */
 const map = L.map('map-canvas')
   .on('load', () => {
-    // console.log('Карта инициализирована');
 
     adForm.classList.remove('ad-form--disabled');
     for (let adFormChild of adFormChildren) {
       adFormChild.removeAttribute('disabled');
     }
   })
-  .setView({
-    lat: 35.6895,
-    lng: 139.69171,
-  }, 8);
+  .setView(coordinatesOfTheCenterCity, 8);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -50,25 +66,24 @@ L.tileLayer(
   },
 ).addTo(map);
 
-const mainPinIcon = L.icon({
-  iconUrl: 'img/main-pin.svg',
-  iconSize: [52, 52],
-  iconAnchor: [26, 52],
-});
+const Marker = function (url, sizeX, sizeY, anchorX, anchorY) {
+  this.iconUrl = url;
+  this.iconSize = [sizeX, sizeY];
+  this.iconAnchor = [anchorX, anchorY];
+};
+const mainPinIcon = L.icon(new Marker('img/main-pin.svg', 52, 52, 26, 52));
+
 
 const mainPinMarker = L.marker(
-  {
-    lat: 35.6895,
-    lng: 139.69171,
-  },
+  coordinatesOfTheCenterCity,
   {
     draggable: true,
     icon: mainPinIcon,
   },
 );
+
 mainPinMarker.addTo(map);
 
-const inputAddress = document.querySelector('#address');
 inputAddress.setAttribute('readonly', '');
 
 const setAddress = (latlng) => {
@@ -84,77 +99,9 @@ mainPinMarker
   });
 
 const resetMainPinMarker = () => {
-  mainPinMarker.setLatLng({lat: 35.6895, lng: 139.69171});
+  mainPinMarker.setLatLng(coordinatesOfTheCenterCity);
   setAddress(mainPinMarker);
 };
-
-
-const housingTypeSelect = mapFilters.querySelector('#housing-type');
-const housingPriceSelect = mapFilters.querySelector('#housing-price');
-const housingRoomsSelect = mapFilters.querySelector('#housing-rooms');
-const housingGuestsSelect = mapFilters.querySelector('#housing-guests');
-const filterWifiSelect = mapFilters.querySelector('#filter-wifi');
-const filterDishwasherSelect = mapFilters.querySelector('#filter-dishwasher');
-const filterParkingSelect = mapFilters.querySelector('#filter-parking');
-const filterWasherSelect = mapFilters.querySelector('#filter-washer');
-const filterElevatorSelect = mapFilters.querySelector('#filter-elevator');
-const filterConditionerSelect = mapFilters.querySelector('#filter-conditioner');
-const SIMILAR_ADS_COUNT = 10;//.slice(0, SIMILAR_ADS_COUNT)
-const filteredData = [];
-const filterState = {};//будем записывать текущее состояние всех select
-const markers = [];
-const RERENDER_DELAY = 500;
-const debounced = _.debounce( () => {filter()}, RERENDER_DELAY);
-
-// housingTypeSelect.addEventListener('change', () => {
-//   filterState.type = housingTypeSelect.value;
-//   debounced();
-// });
-
-// housingPriceSelect.addEventListener('change', () => {
-//   filterState.price = housingPriceSelect.value;
-//   debounced();
-// });
-
-// housingRoomsSelect.addEventListener('change', () => {
-//   filterState.rooms = housingRoomsSelect.value;
-//   debounced();
-// });
-
-// housingGuestsSelect.addEventListener('change', () => {
-//   filterState.guests = housingGuestsSelect.value;
-//   debounced();
-// });
-
-// filterWifiSelect.addEventListener('change', () => {
-//   filterState.wifi = filterWifiSelect.checked;
-//   debounced();
-// });
-
-// filterDishwasherSelect.addEventListener('change', () => {
-//   filterState.dishwasher = filterDishwasherSelect.checked;
-//   debounced();
-// });
-
-// filterParkingSelect.addEventListener('change', () => {
-//   filterState.parking = filterParkingSelect.checked;
-//   debounced();
-// });
-
-// filterWasherSelect.addEventListener('change', () => {
-//   filterState.washer = filterWasherSelect.checked;
-//   debounced();
-// });
-
-// filterElevatorSelect.addEventListener('change', () => {
-//   filterState.elevator = filterElevatorSelect.checked;
-//   debounced();
-// });
-
-// filterConditionerSelect.addEventListener('change', () => {
-//   filterState.conditioner = filterConditionerSelect.checked;
-//   debounced();
-// });
 
 const selectChangeHandler = (select, key, attribute) => {
   select.addEventListener('change', (evt) => {
@@ -162,6 +109,7 @@ const selectChangeHandler = (select, key, attribute) => {
     debounced();
   });
 };
+
 selectChangeHandler(housingTypeSelect, 'type', 'value');
 selectChangeHandler(housingPriceSelect, 'price', 'value');
 selectChangeHandler(housingRoomsSelect, 'rooms', 'value');
@@ -175,7 +123,7 @@ selectChangeHandler(filterElevatorSelect, 'elevator', 'checked');
 selectChangeHandler(filterConditionerSelect, 'conditioner', 'checked');
 
 
-const filter = () => {
+const getFilter = () => {
   markers.forEach(marker => marker.remove());
   markers.length = 0;//очистили массив
 
@@ -226,11 +174,7 @@ const filter = () => {
     }
     return true;
   }).slice(0, SIMILAR_ADS_COUNT).forEach((point) => {
-    const icon = L.icon({
-      iconUrl: 'img/pin.svg',
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
-    });
+    const icon = L.icon(new Marker('img/pin.svg', 40, 40, 20, 40));
 
     const marker = L.marker(
       {
@@ -255,8 +199,6 @@ const filter = () => {
 };
 
 const onSuccess = (similarAds) => {
-  // console.log(similarAds);
-  //filteredData.push(similarAds);//в массив записали массив
   filteredData.push(...similarAds);//в массив записали содержимое массива
   openFilters();
   debounced();
@@ -264,9 +206,8 @@ const onSuccess = (similarAds) => {
 
 const onFail = (errorMessage) => {
   showAlert(errorMessage);
-  // console.warn(errorMessage);
 };
 
-getData('https://22.javascript.pages.academy/keksobooking/data', {}, onSuccess, onFail);
+fetchData('https://22.javascript.pages.academy/keksobooking/data', {}, onSuccess, onFail);
 
 export {resetMainPinMarker};

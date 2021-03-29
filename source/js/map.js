@@ -123,13 +123,6 @@ selectChangeHandler(filterWasherSelect, 'washer', 'checked');
 selectChangeHandler(filterElevatorSelect, 'elevator', 'checked');
 selectChangeHandler(filterConditionerSelect, 'conditioner', 'checked');
 
-// const getFilterCheckbox = (ad, featureName) => {
-//   if (filterState[featureName] && !ad.offer.features.includes(featureName)) {
-//     return false;
-//   }
-//   return true;
-// };
-
 const getFilterCheckbox = (ad, featureName) => {
   return !(filterState[featureName] && !ad.offer.features.includes(featureName));
 };
@@ -168,45 +161,6 @@ const getFiltration = (ad) => {
     && getFilterSelectForNumber(ad, 'guests')
     && getFilterSelectForNumber(ad, 'rooms')
     && getFilterSelecthousingPrice(ad));
-  // if (filterState.conditioner && !ad.offer.features.includes('conditioner')) {
-  //   return false;
-  // }
-  // if (filterState.elevator && !ad.offer.features.includes('elevator')) {
-  //   return false;
-  // }
-  // if (filterState.washer && !ad.offer.features.includes('washer')) {
-  //   return false;
-  // }
-  // if (filterState.parking && !ad.offer.features.includes('parking')) {
-  //   return false;
-  // }
-  // if (filterState.dishwasher && !ad.offer.features.includes('dishwasher')) {
-  //   return false;
-  // }
-  // if (filterState.wifi && !ad.offer.features.includes('wifi')) {
-  //   return false;
-  // }
-  // if (filterState.guests && filterState.guests !== 'any' && ad.offer.guests !== Number(filterState.guests)) {
-  //   return false;
-  // }
-  // if (filterState.rooms && filterState.rooms !== 'any' && ad.offer.rooms !== Number(filterState.rooms)) {
-  //   return false;
-  // }
-  // if (filterState.price && filterState.price !== 'any') {
-  //   if (filterState.price === 'high' && ad.offer.price <= 50000) {//можно писать 50_000 с нижним подчеркиванием для читаемости цифр
-  //     return false;
-  //   }
-  //   if (filterState.price === 'middle' && (ad.offer.price < 10000 || ad.offer.price > 50000)) {
-  //     return false;
-  //   }
-  //   if (filterState.price === 'low' && ad.offer.price > 10000) {
-  //     return false;
-  //   }
-  // }
-  // if (filterState.type && filterState.type !== 'any' && ad.offer.type !== filterState.type) {
-  //   return false;
-  // }
-  // return true;
 };
 
 const getFilter = () => {

@@ -28,13 +28,21 @@ const createCustomPopup = (cardData) => {
   }
 
   popupFeatures.innerHTML = '';
-  for (let i = 0; i < cardFeatures.length; i++) {
+  // for (let i = 0; i < cardFeatures.length; i++) {
+  //   const newFeaturesElement = document.createElement('li');
+  //   const classFeature = `popup__feature--${cardFeatures[i]}`;
+  //   newFeaturesElement.classList.add('popup__feature');
+  //   newFeaturesElement.classList.add(classFeature);
+  //   popupFeatures.appendChild(newFeaturesElement);
+  // }
+
+  cardFeatures.forEach( cardFeature => {
     const newFeaturesElement = document.createElement('li');
-    const classFeature = `popup__feature--${cardFeatures[i]}`;
+    const classFeature = `popup__feature--${cardFeature}`;
     newFeaturesElement.classList.add('popup__feature');
     newFeaturesElement.classList.add(classFeature);
     popupFeatures.appendChild(newFeaturesElement);
-  }
+  });
 
   // Описание объекта недвижимости
   cardElement.querySelector('.popup__description').textContent = cardData.offer.description;
@@ -45,11 +53,16 @@ const createCustomPopup = (cardData) => {
   }
 
   popupPhotosElement.remove();//вызываем на элементе, который хотим удалить
-  for (let i = 0; i < cardPhotos.length; i++) {
+  // for (let i = 0; i < cardPhotos.length; i++) {
+  //   const clonedElement = mainClonedElement.cloneNode(true);
+  //   clonedElement.src = cardPhotos[i];
+  //   popupPhotos.appendChild(clonedElement);
+  // }
+  cardPhotos.forEach( cardPhoto => {
     const clonedElement = mainClonedElement.cloneNode(true);
-    clonedElement.src = cardPhotos[i];
+    clonedElement.src = cardPhoto;
     popupPhotos.appendChild(clonedElement);
-  }
+  });
 
   // Аватар
   cardElement.querySelector('.popup__avatar').src = cardData.author.avatar;

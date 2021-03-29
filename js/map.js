@@ -27,6 +27,20 @@ const markers = [];
 const RERENDER_DELAY = 500;
 const debounced = _.debounce( () => {getFilter()}, RERENDER_DELAY);
 
+const resetFilter = () => {
+  const mapCheckboxs = mapFilters.querySelectorAll('.map__checkbox');
+  housingTypeSelect.value = housingTypeSelect.querySelector('[value="any"]').value;
+  housingPriceSelect.value = housingPriceSelect.querySelector('[value="any"]').value;
+  housingRoomsSelect.value = housingRoomsSelect.querySelector('[value="any"]').value;
+  housingGuestsSelect.value = housingGuestsSelect.querySelector('[value="any"]').value;
+  // for (let i = 0; i < mapCheckbox.length; i++) {
+  //   mapCheckbox[i].checked = false;
+  // }
+  mapCheckboxs.forEach( checkbox => {
+    checkbox.checked = false;
+  });
+};
+
 const coordinatesOfTheCenterCity = {
   lat: 35.6895,
   lng: 139.69171,
@@ -210,4 +224,4 @@ const onFail = (errorMessage) => {
 
 fetchData('https://22.javascript.pages.academy/keksobooking/data', {}, onSuccess, onFail);
 
-export {resetMainPinMarker};
+export {resetMainPinMarker, resetFilter};

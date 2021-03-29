@@ -1,6 +1,6 @@
 // модуль, который отвечает за работу с формой
 import {showErrorMessage, showSuccessMessage} from './util.js';
-import {resetMainPinMarker} from './map.js';
+import {resetMainPinMarker, resetFilter} from './map.js';
 import {fetchData} from './api.js';
 import {previewAvatar, newFoto} from './foto.js';
 
@@ -109,7 +109,7 @@ roomNumberSelect.addEventListener('change', checkRoomNumber);
 
 const resetForm = () => {
   const descriptionTextarea = form.querySelector('#description');
-  const featuresCheckbox = form.querySelectorAll('.feature__checkbox');
+  const featureCheckboxs = form.querySelectorAll('.feature__checkbox');
   titleInput.value = '';
   priceInput.value = '';
   type.value = type.querySelector('[value="flat"]').value;
@@ -119,9 +119,12 @@ const resetForm = () => {
   descriptionTextarea.value = '';
   roomNumberSelect.value = roomNumberSelect.querySelector('[value="1"]').value;
   checkRoomNumber();
-  for (let i = 0; i < featuresCheckbox.length; i++) {
-    featuresCheckbox[i].checked = false;
-  }
+  // for (let i = 0; i < featuresCheckbox.length; i++) {
+  //   featuresCheckbox[i].checked = false;
+  // }
+  featureCheckboxs.forEach( checkbox => {
+    checkbox.checked = false;
+  });
   previewAvatar.src = 'img/muffin-grey.svg';
   newFoto.src = '';
 };
@@ -130,6 +133,7 @@ formResetButton.addEventListener('click', (evt) => {
   evt.preventDefault();
   resetForm();
   resetMainPinMarker();
+  resetFilter();
 });
 
 form.addEventListener('submit', (evt) => {
@@ -145,5 +149,6 @@ form.addEventListener('submit', (evt) => {
       showSuccessMessage();
       resetForm();
       resetMainPinMarker();
+      resetFilter();
     }, showErrorMessage);
 });

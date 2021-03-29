@@ -109,7 +109,7 @@ roomNumberSelect.addEventListener('change', checkRoomNumber);
 
 const resetForm = () => {
   const descriptionTextarea = form.querySelector('#description');
-  const featureCheckboxs = form.querySelectorAll('.feature__checkbox');
+  const featureCheckboxes = form.querySelectorAll('.feature__checkbox');
   titleInput.value = '';
   priceInput.value = '';
   type.value = type.querySelector('[value="flat"]').value;
@@ -119,10 +119,7 @@ const resetForm = () => {
   descriptionTextarea.value = '';
   roomNumberSelect.value = roomNumberSelect.querySelector('[value="1"]').value;
   checkRoomNumber();
-  // for (let i = 0; i < featuresCheckbox.length; i++) {
-  //   featuresCheckbox[i].checked = false;
-  // }
-  featureCheckboxs.forEach( checkbox => {
+  featureCheckboxes.forEach( checkbox => {
     checkbox.checked = false;
   });
   previewAvatar.src = 'img/muffin-grey.svg';

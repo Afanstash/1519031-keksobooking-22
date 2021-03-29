@@ -32,6 +32,7 @@ const onClick = (evt) => {
     closeMessage();
   }
 };
+
 const onKeydown = (evt) => {
   if (isEscEvent(evt)) {
     closeMessage();

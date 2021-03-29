@@ -27,19 +27,6 @@ const markers = [];
 const RERENDER_DELAY = 500;
 const debounced = _.debounce( () => {getFilter()}, RERENDER_DELAY);
 
-const resetFilter = () => {
-  const mapCheckboxs = mapFilters.querySelectorAll('.map__checkbox');
-  housingTypeSelect.value = housingTypeSelect.querySelector('[value="any"]').value;
-  housingPriceSelect.value = housingPriceSelect.querySelector('[value="any"]').value;
-  housingRoomsSelect.value = housingRoomsSelect.querySelector('[value="any"]').value;
-  housingGuestsSelect.value = housingGuestsSelect.querySelector('[value="any"]').value;
-  // for (let i = 0; i < mapCheckbox.length; i++) {
-  //   mapCheckbox[i].checked = false;
-  // }
-  mapCheckboxs.forEach( checkbox => {
-    checkbox.checked = false;
-  });
-};
 
 const coordinatesOfTheCenterCity = {
   lat: 35.6895,
@@ -136,80 +123,95 @@ selectChangeHandler(filterWasherSelect, 'washer', 'checked');
 selectChangeHandler(filterElevatorSelect, 'elevator', 'checked');
 selectChangeHandler(filterConditionerSelect, 'conditioner', 'checked');
 
+const getFiltration = (ad) => {
+  if (filterState.conditioner && !ad.offer.features.includes('conditioner')) {
+    return false;
+  }
+  if (filterState.elevator && !ad.offer.features.includes('elevator')) {
+    return false;
+  }
+  if (filterState.washer && !ad.offer.features.includes('washer')) {
+    return false;
+  }
+  if (filterState.parking && !ad.offer.features.includes('parking')) {
+    return false;
+  }
+  if (filterState.dishwasher && !ad.offer.features.includes('dishwasher')) {
+    return false;
+  }
+  if (filterState.wifi && !ad.offer.features.includes('wifi')) {
+    return false;
+  }
+  if (filterState.guests && filterState.guests !== 'any' && ad.offer.guests !== Number(filterState.guests)) {
+    return false;
+  }
+  if (filterState.rooms && filterState.rooms !== 'any' && ad.offer.rooms !== Number(filterState.rooms)) {
+    return false;
+  }
+  if (filterState.price && filterState.price !== 'any') {
+    if (filterState.price === 'high' && ad.offer.price <= 50000) {//можно писать 50_000 с нижним подчеркиванием для читаемости цифр
+      return false;
+    }
+    if (filterState.price === 'middle' && (ad.offer.price < 10000 || ad.offer.price > 50000)) {
+      return false;
+    }
+    if (filterState.price === 'low' && ad.offer.price > 10000) {
+      return false;
+    }
+  }
+  // return (!(filterState.type && filterState.type !== 'any' && ad.offer.type !== filterState.type))//в таком случае код будет не читаем, зато критерий Д18 выполнен:)
+  if (filterState.type && filterState.type !== 'any' && ad.offer.type !== filterState.type) {
+    return false;
+  }
+  return true;
+};
 
 const getFilter = () => {
   markers.forEach(marker => marker.remove());
   markers.length = 0;//очистили массив
 
-  filteredData.filter( ad => {
-    if (filterState.conditioner && !ad.offer.features.includes('conditioner')) {
-      return false;
-    }
-    if (filterState.elevator && !ad.offer.features.includes('elevator')) {
-      return false;
-    }
-    if (filterState.washer && !ad.offer.features.includes('washer')) {
-      return false;
-    }
-    if (filterState.parking && !ad.offer.features.includes('parking')) {
-      return false;
-    }
-    if (filterState.dishwasher && !ad.offer.features.includes('dishwasher')) {
-      return false;
-    }
-    if (filterState.wifi && !ad.offer.features.includes('wifi')) {
-      return false;
-    }
-    if (filterState.guests && filterState.guests !== 'any') {
-      if (ad.offer.guests !== Number(filterState.guests)) {
-        return false;
-      }
-    }
-    if (filterState.rooms && filterState.rooms !== 'any') {
-      if (ad.offer.rooms !== Number(filterState.rooms)) {
-        return false;
-      }
-    }
-    if (filterState.price && filterState.price !== 'any') {
-      if (filterState.price === 'high' && ad.offer.price <= 50000) {//можно писать 50_000 с нижним подчеркиванием для читаемости цифр
-        return false;
-      }
-      if (filterState.price === 'middle' && (ad.offer.price < 10000 || ad.offer.price > 50000)) {
-        return false;
-      }
-      if (filterState.price === 'low' && ad.offer.price > 10000) {
-        return false;
-      }
-    }
-    if (filterState.type && filterState.type !== 'any') {
-      if (ad.offer.type !== filterState.type) {
-        return false;
-      }
-    }
-    return true;
-  }).slice(0, SIMILAR_ADS_COUNT).forEach((point) => {
-    const icon = L.icon(new Marker('img/pin.svg', 40, 40, 20, 40));
+  filteredData
+    .filter(getFiltration)
+    .slice(0, SIMILAR_ADS_COUNT)
+    .forEach((point) => {
+      const icon = L.icon(new Marker('img/pin.svg', 40, 40, 20, 40));
 
-    const marker = L.marker(
-      {
-        lat: point.location.lat,
-        lng: point.location.lng,
-      },
-      {
-        icon,
-      },
-    );
-
-    markers.push(marker);
-
-    marker
-      .addTo(map)
-      .bindPopup(createCustomPopup(point),
+      const marker = L.marker(
         {
-          keepInView: true,
+          lat: point.location.lat,
+          lng: point.location.lng,
+        },
+        {
+          icon,
         },
       );
+
+      markers.push(marker);
+
+      marker
+        .addTo(map)
+        .bindPopup(createCustomPopup(point),
+          {
+            keepInView: true,
+          },
+        );
+    });
+};
+
+const resetFilter = () => {
+  const mapCheckboxes = mapFilters.querySelectorAll('.map__checkbox');
+  housingTypeSelect.value = housingTypeSelect.querySelector('[value="any"]').value;
+  housingPriceSelect.value = housingPriceSelect.querySelector('[value="any"]').value;
+  housingRoomsSelect.value = housingRoomsSelect.querySelector('[value="any"]').value;
+  housingGuestsSelect.value = housingGuestsSelect.querySelector('[value="any"]').value;
+  mapCheckboxes.forEach( checkbox => {
+    checkbox.checked = false;
   });
+  Object.keys(filterState)//вернули массив со всеми ключами
+    .forEach( (key) => {
+      filterState[key] = undefined;
+    })
+  debounced();
 };
 
 const onSuccess = (similarAds) => {
